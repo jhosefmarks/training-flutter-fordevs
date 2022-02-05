@@ -37,7 +37,6 @@ void main() {
   ClientSpy client;
   String url;
 
-
   setUp(() {
     client = ClientSpy();
     sut = HttpAdapter(client);
@@ -45,10 +44,17 @@ void main() {
   });
 
   group('post', () {
-    test('Should calls post with correct values', () async {
-      when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
-        .thenAnswer((_) async => Response('{"any_key":"any_value"}', 200));
+    PostExpectation mockRequest() =>
+      when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body')));
 
+    void mockResponse(int statusCode, { String body: '{"any_key":"any_value"}' }) =>
+      mockRequest().thenAnswer((_) async => Response(body, statusCode));
+
+    setUp(() {
+      mockResponse(200);
+    });
+
+    test('Should calls post with correct values', () async {
       await sut.request(url: url, method: 'post', body: { 'any_key': 'any_value' });
 
       verify(client.post(
@@ -62,9 +68,6 @@ void main() {
     });
 
     test('Should calls post without body', () async {
-      when(client.post(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => Response('{"any_key":"any_value"}', 200));
-
       await sut.request(url: url, method: 'post');
 
       verify(client.post(
@@ -74,17 +77,13 @@ void main() {
     });
 
     test('Should return data if post returns 200', () async {
-      when(client.post(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => Response('{"any_key":"any_value"}', 200));
-
       final future = await sut.request(url: url, method: 'post');
 
       expect(future, {'any_key': 'any_value'});
     });
 
     test('Should return null if post returns 200 with no data', () async {
-      when(client.post(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => Response('', 200));
+      mockResponse(200, body: '');
 
       final future = await sut.request(url: url, method: 'post');
 
