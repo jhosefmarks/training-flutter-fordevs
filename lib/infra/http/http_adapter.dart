@@ -44,6 +44,10 @@ class HttpAdapter implements HttpClient {
       throw HttpError.unauthorized;
     }
 
+    if (response.statusCode == 403) {
+      throw HttpError.forbidden;
+    }
+
     throw HttpError.serverError;
   }
 }
