@@ -55,20 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Form(
                         child: Column(
                           children: <Widget>[
-                            StreamBuilder<String>(
-                              stream: widget.presenter.emailErrorStream,
-                              builder: (context, snapshot) {
-                                return TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    icon: Icon(Icons.email, color: Theme.of(context).primaryColorLight),
-                                    errorText: snapshot.data?.isEmpty == true ? null : snapshot.data
-                                  ),
-                                  keyboardType: TextInputType.emailAddress,
-                                  onChanged: widget.presenter.validateEmail,
-                                );
-                              }
-                            ),
+                            EmailInput(),
                             Padding(
                               padding: EdgeInsets.only(top: 8.0, bottom: 32.0),
                               child: PasswordInput(),
@@ -100,6 +87,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-
-
