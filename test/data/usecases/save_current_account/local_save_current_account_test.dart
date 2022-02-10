@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:fordevs/domain/entities/entities.dart';
+import 'package:fordevs/domain/helpers/helpers.dart';
 import 'package:fordevs/domain/usecases/usecases.dart';
 
 class LocalSaveCurrentAccount implements SaveCurrentAccount {
@@ -12,25 +13,42 @@ class LocalSaveCurrentAccount implements SaveCurrentAccount {
   LocalSaveCurrentAccount({ @required this.saveSecureCacheStorage });
 
   Future<void> save(AccountEntity account) async {
-    await saveSecureCacheStorage.save(key: 'token', value: account.token);
+    try {
+      await saveSecureCacheStorage.saveSecure(key: 'token', value: account.token);
+    } catch(error) {
+      throw DomainError.unexpected;
+    }
   }
 
 }
 
 abstract class SaveSecureCacheStorage {
-  Future<void> save({ @required String key, @required String value });
+  Future<void> saveSecure({ @required String key, @required String value });
 }
 
 class SaveSecureCacheStorageSpy extends Mock implements SaveSecureCacheStorage {}
 
 void main() {
-  test('Should call SaveCacheStorage with correct values', () async {
+  test('Should call SaveSecureCacheStorage with correct values', () async {
     final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
     final sut = LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
     final account = AccountEntity(faker.guid.guid());
 
     sut.save(account);
 
-    verify(saveSecureCacheStorage.save(key: 'token', value: account.token));
+    verify(saveSecureCacheStorage.saveSecure(key: 'token', value: account.token));
+  });
+
+  test('Should throw UnexpectedError if SaveSecureCacheStorage throws', () async {
+    final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
+    final sut = LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
+    final account = AccountEntity(faker.guid.guid());
+
+    when(saveSecureCacheStorage.saveSecure(key: anyNamed('key'), value: anyNamed('value')))
+      .thenThrow(Exception());
+
+    final future = sut.save(account);
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
