@@ -18,5 +18,4 @@ class LocalSaveCurrentAccount implements SaveCurrentAccount {
       throw DomainError.unexpected;
     }
   }
-
 }
