@@ -30,10 +30,10 @@ void main() {
 
   group('post', () {
     PostExpectation mockRequest() =>
-      when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body')));
+        when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body')));
 
-    void mockResponse(int statusCode, { String body: '{"any_key":"any_value"}' }) =>
-      mockRequest().thenAnswer((_) async => Response(body, statusCode));
+    void mockResponse(int statusCode, {String body: '{"any_key":"any_value"}'}) =>
+        mockRequest().thenAnswer((_) async => Response(body, statusCode));
 
     void mockError() => mockRequest().thenThrow(Exception());
 
@@ -42,15 +42,15 @@ void main() {
     });
 
     test('Should calls post with correct values', () async {
-      await sut.request(url: url, method: 'post', body: { 'any_key': 'any_value' });
+      await sut.request(url: url, method: 'post', body: {'any_key': 'any_value'});
 
       verify(client.post(
         url,
-        headers: { 
+        headers: {
           'content-type': 'application/json',
-          'accept': 'application/json'
+          'accept': 'application/json',
         },
-        body: '{"any_key":"any_value"}'
+        body: '{"any_key":"any_value"}',
       ));
     });
 
@@ -59,7 +59,7 @@ void main() {
 
       verify(client.post(
         any,
-        headers: anyNamed('headers')
+        headers: anyNamed('headers'),
       ));
     });
 

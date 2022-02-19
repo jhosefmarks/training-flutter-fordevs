@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 import 'package:fordevs/domain/helpers/helpers.dart';
 import 'package:fordevs/domain/usecases/usecases.dart';
- 
+
 import 'package:fordevs/data/http/http.dart';
 import 'package:fordevs/data/usecases/usecases.dart';
 
@@ -15,10 +15,16 @@ void main() {
   HttpClientSpy httpClient;
   String url;
   AuthenticationParams params;
-  Map mockValidData() => { 'accessToken': faker.guid.guid(), 'name': faker.person.name()};
+  Map mockValidData() => {
+        'accessToken': faker.guid.guid(),
+        'name': faker.person.name(),
+      };
 
-  PostExpectation mockRequest() =>
-    when(httpClient.request(url: anyNamed('url'), method: anyNamed('method'), body: anyNamed('body')));
+  PostExpectation mockRequest() => when(httpClient.request(
+        url: anyNamed('url'),
+        method: anyNamed('method'),
+        body: anyNamed('body'),
+      ));
 
   void mockHttpData(Map data) => mockRequest().thenAnswer((_) async => data);
 
@@ -33,13 +39,13 @@ void main() {
 
   test('Should call HttpClient with correct values', () async {
     mockHttpData(mockValidData());
-    
+
     await sut.auth(params);
 
     verify(httpClient.request(
-      url: url, 
+      url: url,
       method: 'post',
-      body: { 'email': params.email, 'password': params.secret }
+      body: {'email': params.email, 'password': params.secret},
     ));
   });
 
@@ -85,7 +91,7 @@ void main() {
   });
 
   test('Should throw UnexpectedError if HttpClient returns 200 with invalid data', () async {
-    mockHttpData({ 'invalid_key': 'invalid_value' });
+    mockHttpData({'invalid_key': 'invalid_value'});
 
     final future = sut.auth(params);
 

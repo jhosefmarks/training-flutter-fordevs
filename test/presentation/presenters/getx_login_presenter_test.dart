@@ -10,7 +10,9 @@ import 'package:fordevs/presentation/presenters/presenters.dart';
 import 'package:fordevs/presentation/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
+
 class AuthenticationSpy extends Mock implements Authentication {}
+
 class SaveCurrentAccountSpy extends Mock implements SaveCurrentAccount {}
 
 void main() {
@@ -22,10 +24,12 @@ void main() {
   String password;
   String token;
 
-  PostExpectation mockValidationCall(String field) =>
-    when(validation.validate(field: field == null ? anyNamed('field') : field, value: anyNamed('value')));
+  PostExpectation mockValidationCall(String field) => when(validation.validate(
+        field: field == null ? anyNamed('field') : field,
+        value: anyNamed('value'),
+      ));
 
-  void mockValidation({ String field, String value }) {
+  void mockValidation({String field, String value}) {
     mockValidationCall(field).thenReturn(value);
   }
 
@@ -52,7 +56,7 @@ void main() {
     sut = GetxLoginPresenter(
       validation: validation,
       authentication: authentication,
-      saveCurrentAccount: saveCurrentAccount
+      saveCurrentAccount: saveCurrentAccount,
     );
     email = faker.internet.email();
     password = faker.internet.password();
@@ -156,7 +160,8 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.mainErrorStream.listen((error) => expect(error, 'Algo errado aconteceu. Tente novamente em breve.'));
+    sut.mainErrorStream
+        .listen((error) => expect(error, 'Algo errado aconteceu. Tente novamente em breve.'));
 
     await sut.auth();
   });
@@ -199,7 +204,8 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.mainErrorStream.listen((error) => expect(error, 'Algo errado aconteceu. Tente novamente em breve.'));
+    sut.mainErrorStream
+        .listen((error) => expect(error, 'Algo errado aconteceu. Tente novamente em breve.'));
 
     await sut.auth();
   });

@@ -16,7 +16,7 @@ void main() {
 
   void mockError() {
     when(saveSecureCacheStorage.saveSecure(key: anyNamed('key'), value: anyNamed('value')))
-      .thenThrow(Exception());
+        .thenThrow(Exception());
   }
 
   setUp(() {
