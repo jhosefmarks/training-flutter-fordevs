@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/i18n/i18n.dart';
+
 import '../../components/components.dart';
 
 import 'components/components.dart';
@@ -23,65 +25,65 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-        body: Builder(
-          builder: (context) {
-            presenter.isLoadingStream.listen((isLoading) {
-              if (isLoading) {
-                showLoading(context);
-              } else {
-                hideLoading(context);
-              }
-            });
+      body: Builder(
+        builder: (context) {
+          presenter.isLoadingStream.listen((isLoading) {
+            if (isLoading) {
+              showLoading(context);
+            } else {
+              hideLoading(context);
+            }
+          });
 
-            presenter.mainErrorStream.listen((error) {
-              if (error != null) {
-                showErrorMessage(context, error);
-              }
-            });
+          presenter.mainErrorStream.listen((error) {
+            if (error != null) {
+              showErrorMessage(context, error);
+            }
+          });
 
-            presenter.navigateToStream.listen((page) {
-              if (page?.isNotEmpty == true) {
-                Get.offAllNamed(page);
-              }
-            });
+          presenter.navigateToStream.listen((page) {
+            if (page?.isNotEmpty == true) {
+              Get.offAllNamed(page);
+            }
+          });
 
-            return GestureDetector(
-              onTap: _hideKeyboard,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    LoginHeader(),
-                    Headline1(text: 'Login'),
-                    Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: Provider<LoginPresenter>(
-                        create: (_) => presenter,
-                        child: Form(
-                          child: Column(
-                            children: <Widget>[
-                              EmailInput(),
-                              Padding(
-                                padding: EdgeInsets.only(top: 8.0, bottom: 32.0),
-                                child: PasswordInput(),
-                              ),
-                              LoginButton(),
-                              FlatButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.person),
-                                label: Text('Criar Conta')
-                              )
-                            ],
-                          ),
+          return GestureDetector(
+            onTap: _hideKeyboard,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  LoginHeader(),
+                  Headline1(text: R.string.login),
+                  Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: Provider<LoginPresenter>(
+                      create: (_) => presenter,
+                      child: Form(
+                        child: Column(
+                          children: <Widget>[
+                            EmailInput(),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0, bottom: 32.0),
+                              child: PasswordInput(),
+                            ),
+                            LoginButton(),
+                            FlatButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.person),
+                              label: Text(R.string.addAccount),
+                            )
+                          ],
                         ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
-            );
-          }
-        ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
