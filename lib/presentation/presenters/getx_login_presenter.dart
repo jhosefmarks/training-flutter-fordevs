@@ -13,15 +13,15 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   final Authentication authentication;
   final SaveCurrentAccount saveCurrentAccount;
 
+  final _emailError = RxString();
+  final _passwordError = RxString();
+  final _mainError = RxString();
+  final _navigateTo = RxString();
+  final _isFormValid = false.obs;
+  final _isLoading = false.obs;
+
   String _email;
   String _password;
-
-  var _emailError = RxString();
-  var _passwordError = RxString();
-  var _mainError = RxString();
-  var _navigateTo = RxString();
-  var _isFormValid = false.obs;
-  var _isLoading = false.obs;
 
   Stream<String> get emailErrorStream => _emailError.stream;
   Stream<String> get passwordErrorStream => _passwordError.stream;
@@ -30,11 +30,10 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   Stream<bool> get isFormValidStream => _isFormValid.stream;
   Stream<bool> get isLoadingStream => _isLoading.stream;
 
-  GetxLoginPresenter({
-    @required this.validation,
-    @required this.authentication,
-    @required this.saveCurrentAccount
-  });
+  GetxLoginPresenter(
+      {@required this.validation,
+      @required this.authentication,
+      @required this.saveCurrentAccount});
 
   void validateEmail(String email) {
     _email = email;
@@ -49,15 +48,18 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   }
 
   void _validateForm() {
-    _isFormValid.value = _emailError.value == null && _passwordError.value == null
-      && _email != null && _password != null;
+    _isFormValid.value = _emailError.value == null &&
+        _passwordError.value == null &&
+        _email != null &&
+        _password != null;
   }
 
   Future<void> auth() async {
     _isLoading.value = true;
 
     try {
-      final account = await authentication.auth(AuthenticationParams(email: _email, secret: _password));
+      final account =
+          await authentication.auth(AuthenticationParams(email: _email, secret: _password));
       await saveCurrentAccount.save(account);
       _navigateTo.value = '/surveys';
     } on DomainError catch (error) {

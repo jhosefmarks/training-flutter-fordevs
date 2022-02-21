@@ -6,9 +6,9 @@ import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
 
 class GetxSplashPresenter implements SplashPresenter {
-  LoadCurrentAccount loadCurrentAccount;
+  final LoadCurrentAccount loadCurrentAccount;
 
-  var _navigateTo = RxString();
+  final _navigateTo = RxString();
 
   Stream<String> get navigateToStream => _navigateTo.stream;
 
