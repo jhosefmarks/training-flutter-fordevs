@@ -1,11 +1,11 @@
-import 'package:meta/meta.dart';
 import 'package:get/get.dart';
-
-import '../../ui/helpers/errors/errors.dart';
-import '../../ui/pages/pages.dart';
+import 'package:meta/meta.dart';
 
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
+
+import '../../ui/helpers/helpers.dart';
+import '../../ui/pages/pages.dart';
 
 import '../protocols/protocols.dart';
 

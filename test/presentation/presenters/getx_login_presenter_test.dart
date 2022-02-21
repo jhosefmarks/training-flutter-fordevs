@@ -9,7 +9,7 @@ import 'package:fordevs/domain/usecases/usecases.dart';
 import 'package:fordevs/presentation/presenters/presenters.dart';
 import 'package:fordevs/presentation/protocols/protocols.dart';
 
-import 'package:fordevs/ui/helpers/errors/ui_error.dart';
+import 'package:fordevs/ui/helpers/helpers.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
