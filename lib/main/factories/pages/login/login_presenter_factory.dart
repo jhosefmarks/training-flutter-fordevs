@@ -4,10 +4,8 @@ import '../../../../ui/pages/pages.dart';
 
 import '../../factories.dart';
 
-LoginPresenter makeGetxLoginPresenter() {
-  return GetxLoginPresenter(
-    authentication: makeRemoteAuthentication(),
-    validation: makeLoginValidation(),
-    saveCurrentAccount: makeLocalSaveCurrentAccount()
-  );
-}
+LoginPresenter makeGetxLoginPresenter() => GetxLoginPresenter(
+      authentication: makeRemoteAuthentication(),
+      validation: makeLoginValidation(),
+      saveCurrentAccount: makeLocalSaveCurrentAccount(),
+    );
