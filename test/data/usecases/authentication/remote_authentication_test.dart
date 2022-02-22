@@ -15,6 +15,7 @@ void main() {
   HttpClientSpy httpClient;
   String url;
   AuthenticationParams params;
+
   Map mockValidData() => {
         'accessToken': faker.guid.guid(),
         'name': faker.person.name(),
