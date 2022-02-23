@@ -199,4 +199,26 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('Should present passwordConfirmation error', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    passwordConfirmationErrorController.add(UIError.invalidField);
+    await tester.pump();
+    expect(find.text(UIError.invalidField.description), findsOneWidget);
+
+    passwordConfirmationErrorController.add(UIError.requiredField);
+    await tester.pump();
+    expect(find.text(UIError.requiredField.description), findsOneWidget);
+
+    passwordConfirmationErrorController.add(null);
+    await tester.pump();
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel('Confirmar senha'),
+        matching: find.byType(Text),
+      ),
+      findsOneWidget,
+    );
+  });
 }
