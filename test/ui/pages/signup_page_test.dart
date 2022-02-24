@@ -18,6 +18,7 @@ void main() {
   StreamController<UIError> passwordErrorController;
   StreamController<UIError> passwordConfirmationErrorController;
   StreamController<UIError> mainErrorController;
+  StreamController<String> navigateToController;
   StreamController<bool> isFormValidController;
   StreamController<bool> isLoadingController;
 
@@ -26,8 +27,9 @@ void main() {
     emailErrorController = StreamController<UIError>();
     passwordErrorController = StreamController<UIError>();
     passwordConfirmationErrorController = StreamController<UIError>();
-    isFormValidController = StreamController<bool>();
     mainErrorController = StreamController<UIError>();
+    navigateToController = StreamController<String>();
+    isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
   }
 
@@ -38,6 +40,7 @@ void main() {
     when(presenter.passwordConfirmationErrorStream)
         .thenAnswer((_) => passwordConfirmationErrorController.stream);
     when(presenter.mainErrorStream).thenAnswer((_) => mainErrorController.stream);
+    when(presenter.navigateToStream).thenAnswer((_) => navigateToController.stream);
     when(presenter.isFormValidStream).thenAnswer((_) => isFormValidController.stream);
     when(presenter.isLoadingStream).thenAnswer((_) => isLoadingController.stream);
   }
@@ -48,6 +51,7 @@ void main() {
     passwordErrorController.close();
     passwordConfirmationErrorController.close();
     mainErrorController.close();
+    navigateToController.close();
     isFormValidController.close();
     isLoadingController.close();
   }
@@ -60,7 +64,10 @@ void main() {
 
     final signUpPage = GetMaterialApp(
       initialRoute: '/signup',
-      getPages: [GetPage(name: '/signup', page: () => SignUpPage(presenter))],
+      getPages: [
+        GetPage(name: '/signup', page: () => SignUpPage(presenter)),
+        GetPage(name: '/any_route', page: () => Scaffold(body: Text('fake page')))
+      ],
     );
 
     await tester.pumpWidget(signUpPage);
@@ -303,5 +310,27 @@ void main() {
     await tester.pump();
 
     expect(find.text(UIError.unexpected.description), findsOneWidget);
+  });
+
+  testWidgets('Should change page', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    navigateToController.add('/any_route');
+    await tester.pumpAndSettle();
+
+    expect(Get.currentRoute, '/any_route');
+    expect(find.text('fake page'), findsOneWidget);
+  });
+
+  testWidgets('Should not change page', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    navigateToController.add('');
+    await tester.pump();
+    expect(Get.currentRoute, '/signup');
+
+    navigateToController.add(null);
+    await tester.pump();
+    expect(Get.currentRoute, '/signup');
   });
 }
