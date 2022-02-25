@@ -2,16 +2,21 @@ import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import 'package:fordevs/domain/usecases/add_account.dart';
+
 import 'package:fordevs/presentation/presenters/presenters.dart';
 import 'package:fordevs/presentation/protocols/protocols.dart';
 
 import 'package:fordevs/ui/helpers/helpers.dart';
+
+class AddAccountSpy extends Mock implements AddAccount {}
 
 class ValidationSpy extends Mock implements Validation {}
 
 void main() {
   GetxSignUpPresenter sut;
   ValidationSpy validation;
+  AddAccountSpy addAccount;
   String email;
   String name;
   String password;
@@ -28,7 +33,8 @@ void main() {
 
   setUp(() {
     validation = ValidationSpy();
-    sut = GetxSignUpPresenter(validation: validation);
+    addAccount = AddAccountSpy();
+    sut = GetxSignUpPresenter(validation: validation, addAccount: addAccount);
     email = faker.internet.email();
     name = faker.person.name();
     password = faker.internet.password();
@@ -187,5 +193,21 @@ void main() {
     await Future.delayed(Duration.zero);
     sut.validatePasswordConfirmation(passwordConfirmation);
     await Future.delayed(Duration.zero);
+  });
+
+  test('Should call AddAccount with correct values', () async {
+    sut.validateEmail(email);
+    sut.validateName(name);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    await sut.signUp();
+
+    verify(addAccount.add(AddAccountParams(
+      email: email,
+      name: name,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+    ))).called(1);
   });
 }
