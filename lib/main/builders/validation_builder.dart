@@ -2,7 +2,6 @@ import '../../validation/protocols/protocols.dart';
 import '../../validation/validators/validators.dart';
 
 class ValidationBuilder {
-
   String fieldName;
   List<FieldValidation> validations = [];
 
@@ -25,6 +24,12 @@ class ValidationBuilder {
 
   ValidationBuilder email() {
     validations.add(EmailValidation(fieldName));
+
+    return this;
+  }
+
+  ValidationBuilder min(int size) {
+    validations.add(MinLengthValidation(field: fieldName, size: size));
 
     return this;
   }
