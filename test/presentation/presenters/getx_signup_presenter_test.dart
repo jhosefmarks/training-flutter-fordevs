@@ -2,7 +2,8 @@ import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:fordevs/domain/usecases/add_account.dart';
+import 'package:fordevs/domain/entities/entities.dart';
+import 'package:fordevs/domain/usecases/usecases.dart';
 
 import 'package:fordevs/presentation/presenters/presenters.dart';
 import 'package:fordevs/presentation/protocols/protocols.dart';
@@ -11,16 +12,20 @@ import 'package:fordevs/ui/helpers/helpers.dart';
 
 class AddAccountSpy extends Mock implements AddAccount {}
 
+class SaveCurrentAccountSpy extends Mock implements SaveCurrentAccount {}
+
 class ValidationSpy extends Mock implements Validation {}
 
 void main() {
   GetxSignUpPresenter sut;
   ValidationSpy validation;
   AddAccountSpy addAccount;
+  SaveCurrentAccountSpy saveCurrentAccount;
   String email;
   String name;
   String password;
   String passwordConfirmation;
+  String token;
 
   PostExpectation mockValidationCall(String field) => when(validation.validate(
         field: field == null ? anyNamed('field') : field,
@@ -31,16 +36,29 @@ void main() {
     mockValidationCall(field).thenReturn(value);
   }
 
+  PostExpectation mockAddAccountCall() => when(addAccount.add(any));
+
+  void mockAddAccount() {
+    mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
+  }
+
   setUp(() {
     validation = ValidationSpy();
     addAccount = AddAccountSpy();
-    sut = GetxSignUpPresenter(validation: validation, addAccount: addAccount);
+    saveCurrentAccount = SaveCurrentAccountSpy();
+    sut = GetxSignUpPresenter(
+      validation: validation,
+      addAccount: addAccount,
+      saveCurrentAccount: saveCurrentAccount,
+    );
     email = faker.internet.email();
     name = faker.person.name();
     password = faker.internet.password();
     passwordConfirmation = faker.internet.password();
+    token = faker.guid.guid();
 
     mockValidation();
+    mockAddAccount();
   });
 
   test('Should call Validation with correct email', () {
@@ -209,5 +227,16 @@ void main() {
       password: password,
       passwordConfirmation: passwordConfirmation,
     ))).called(1);
+  });
+
+  test('Should call SaveCurrentAccount with correct value', () async {
+    sut.validateEmail(email);
+    sut.validateName(name);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    await sut.signUp();
+
+    verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
   });
 }
