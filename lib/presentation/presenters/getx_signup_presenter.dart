@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
+import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 
 import '../../ui/helpers/helpers.dart';
@@ -99,9 +100,14 @@ class GetxSignUpPresenter extends GetxController {
         passwordConfirmation: _passwordConfirmation,
       ));
       await saveCurrentAccount.save(account);
-    } catch (error) {
-      _mainError.value = UIError.unexpected;
-
+    } on DomainError catch (error) {
+      switch (error) {
+        case DomainError.emailInUse:
+          _mainError.value = UIError.emailInUse;
+          break;
+        default:
+          _mainError.value = UIError.unexpected;
+      }
       _isLoading.value = false;
     }
   }
