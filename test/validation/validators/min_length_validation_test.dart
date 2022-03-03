@@ -22,6 +22,7 @@ void main() {
     final error = sut.validate({'any_field': null});
 
     expect(error, ValidationError.invalidField);
+    expect(sut.validate({}), ValidationError.invalidField);
   });
 
   test('Should return error if value is less than min size', () {

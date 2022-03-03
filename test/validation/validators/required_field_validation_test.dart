@@ -19,6 +19,7 @@ void main() {
   });
 
   test('Shoud return error if values is null', () {
+    expect(sut.validate({}), ValidationError.requiredField);
     expect(sut.validate({'any_field': null}), ValidationError.requiredField);
   });
 }
