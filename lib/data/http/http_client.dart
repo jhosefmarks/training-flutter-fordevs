@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
-abstract class HttpClient {
-  Future<Map> request({
+abstract class HttpClient<ResponseType> {
+  Future<ResponseType> request({
     @required String url,
     @required String method,
-    Map body
+    Map body,
   });
 }
