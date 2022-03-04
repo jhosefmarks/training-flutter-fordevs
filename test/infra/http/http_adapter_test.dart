@@ -168,10 +168,13 @@ void main() {
     test('Should call get with correct values', () async {
       await sut.request(url: url, method: 'get');
 
-      verify(client.get(url, headers: {
-        'content-type': 'application/json',
-        'accept': 'application/gjson',
-      }));
+      verify(client.get(
+        url,
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+        },
+      ));
     });
 
     test('Should return data if get returns 200', () async {
