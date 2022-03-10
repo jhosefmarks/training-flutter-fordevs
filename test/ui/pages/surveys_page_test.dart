@@ -15,6 +15,11 @@ void main() {
   StreamController<bool> isLoadingController;
   StreamController<List<SurveyViewModel>> loadSurveysController;
 
+  List<SurveyViewModel> makeSurveys() => [
+        SurveyViewModel(id: '1', question: 'Question 1', date: 'Any Date', didAnswer: true),
+        SurveyViewModel(id: '2', question: 'Question 2', date: 'Any Date', didAnswer: false),
+      ];
+
   void initStreams() {
     isLoadingController = StreamController<bool>();
     loadSurveysController = StreamController<List<SurveyViewModel>>();
@@ -82,5 +87,17 @@ void main() {
     expect(find.text(UIError.unexpected.description), findsOneWidget);
     expect(find.text(R.string.reload), findsOneWidget);
     expect(find.text('Question 1'), findsNothing);
+  });
+
+  testWidgets('Should present list if loadSurveysStream succeeds', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadSurveysController.add(makeSurveys());
+    await tester.pump();
+
+    expect(find.text(UIError.unexpected.description), findsNothing);
+    expect(find.text(R.string.reload), findsNothing);
+    expect(find.text('Question 1'), findsWidgets);
+    expect(find.text('Question 2'), findsWidgets);
   });
 }
