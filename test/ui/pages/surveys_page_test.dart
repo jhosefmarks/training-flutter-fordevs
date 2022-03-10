@@ -13,7 +13,7 @@ class SurveysPresenterSpy extends Mock implements SurveysPresenter {}
 void main() {
   SurveysPresenterSpy presenter;
   StreamController<bool> isLoadingController;
-  StreamController<List<SurveyViewModel>> loadSurveysController;
+  StreamController<List<SurveyViewModel>> surveysController;
 
   List<SurveyViewModel> makeSurveys() => [
         SurveyViewModel(id: '1', question: 'Question 1', date: 'Date 1', didAnswer: true),
@@ -22,17 +22,17 @@ void main() {
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
-    loadSurveysController = StreamController<List<SurveyViewModel>>();
+    surveysController = StreamController<List<SurveyViewModel>>();
   }
 
   void mockStreams() {
     when(presenter.isLoadingStream).thenAnswer((_) => isLoadingController.stream);
-    when(presenter.loadSurveysStream).thenAnswer((_) => loadSurveysController.stream);
+    when(presenter.surveysStream).thenAnswer((_) => surveysController.stream);
   }
 
   void closeStreams() {
     isLoadingController.close();
-    loadSurveysController.close();
+    surveysController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -81,7 +81,7 @@ void main() {
   testWidgets('Should present error if loadSurveysStream fails', (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadSurveysController.addError(UIError.unexpected.description);
+    surveysController.addError(UIError.unexpected.description);
     await tester.pump();
 
     expect(find.text(UIError.unexpected.description), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
   testWidgets('Should present list if loadSurveysStream succeeds', (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadSurveysController.add(makeSurveys());
+    surveysController.add(makeSurveys());
     await tester.pump();
 
     expect(find.text(UIError.unexpected.description), findsNothing);
@@ -106,7 +106,7 @@ void main() {
   testWidgets('Should call LoadSurveys on reload button click', (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadSurveysController.addError(UIError.unexpected.description);
+    surveysController.addError(UIError.unexpected.description);
     await tester.pump();
     await tester.tap(find.text('Recarregar'));
 
