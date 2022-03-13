@@ -5,7 +5,7 @@ class AccountEntity extends Equatable {
   final String token;
 
   @override
-  List get props => [token];
+  List get props => ['token'];
 
   AccountEntity({@required this.token});
 }

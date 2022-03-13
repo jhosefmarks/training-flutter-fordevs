@@ -11,7 +11,7 @@ class AuthenticationParams extends Equatable {
   final String email;
   final String secret;
 
-  List get props => [email, secret];
+  List get props => ['email', 'secret'];
 
   AuthenticationParams({@required this.email, @required this.secret});
 }
