@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import 'package:fordevs/data/cache/cache.dart';
 import 'package:fordevs/data/models/models.dart';
 
 import 'package:fordevs/domain/helpers/helpers.dart';
@@ -29,10 +30,6 @@ class LocalLoadSurveys {
 }
 
 class FetchCacheStorageSpy extends Mock implements FetchCacheStorage {}
-
-abstract class FetchCacheStorage {
-  Future<dynamic> fetch(String key);
-}
 
 void main() {
   LocalLoadSurveys sut;
