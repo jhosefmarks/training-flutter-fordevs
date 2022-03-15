@@ -20,7 +20,7 @@
 > ## Caso de sucesso
 
 1. ✅ Sistema solicita os dados das enquetes do Cache
-2. Sistema valida os dados recebidos do Cache
+2. ✅ Sistema valida os dados recebidos do Cache
 
 > ## Exceção - Erro ao carregar dados do Cache
 
@@ -28,7 +28,7 @@
 
 > ## Exceção - Dados inválidos no cache
 
-1. Sistema limpa os dados do cache
+1. ✅ Sistema limpa os dados do cache
 
 ---
 
