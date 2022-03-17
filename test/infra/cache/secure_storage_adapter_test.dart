@@ -12,13 +12,13 @@ void main() {
   String key;
   String value;
   FlutterSecureStorageSpy secureStorage;
-  LocalStorageAdapter sut;
+  SecureStorageAdapter sut;
 
   setUp(() {
     key = faker.lorem.word();
     value = faker.guid.guid();
     secureStorage = FlutterSecureStorageSpy();
-    sut = LocalStorageAdapter(secureStorage: secureStorage);
+    sut = SecureStorageAdapter(secureStorage: secureStorage);
   });
 
   group('saveSecure', () {
