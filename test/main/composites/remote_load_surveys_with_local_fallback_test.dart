@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 import 'package:fordevs/data/usecases/usecases.dart';
 
 import 'package:fordevs/domain/entities/entities.dart';
+import 'package:fordevs/domain/helpers/domain_error.dart';
 import 'package:fordevs/domain/usecases/load_surveys.dart';
 
 class RemoteLoadSurveysWithLocalFallback implements LoadSurveys {
@@ -41,10 +42,14 @@ void main() {
         )
       ];
 
+  PostExpectation mockRemoteLoadCall() => when(remote.load());
+
   void mockRemoteLoad() {
     remoteSurveys = mockSurveys();
-    when(remote.load()).thenAnswer((_) async => remoteSurveys);
+    mockRemoteLoadCall().thenAnswer((_) async => remoteSurveys);
   }
+
+  void mockRemoteLoadError(DomainError error) => mockRemoteLoadCall().thenThrow(error);
 
   setUp(() {
     remote = RemoteLoadSurveysSpy();
@@ -70,5 +75,13 @@ void main() {
     final surveys = await sut.load();
 
     expect(surveys, remoteSurveys);
+  });
+
+  test('Should rethrow if remote load throws AccessDeniedError', () async {
+    mockRemoteLoadError(DomainError.accessDenied);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.accessDenied));
   });
 }
