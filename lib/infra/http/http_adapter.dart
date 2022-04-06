@@ -25,14 +25,17 @@ class HttpAdapter implements HttpClient {
     var response = Response('', 500);
 
     final jsonBody = body != null ? jsonEncode(body) : null;
+    Future<Response> futureResponse;
 
     try {
       if (method == 'post') {
-        response = await client
-            .post(url, headers: defaultHeaders, body: jsonBody)
-            .timeout(Duration(seconds: 10));
+        futureResponse = client.post(url, headers: defaultHeaders, body: jsonBody);
       } else if (method == 'get') {
-        response = await client.get(url, headers: defaultHeaders).timeout(Duration(seconds: 10));
+        futureResponse = client.get(url, headers: defaultHeaders);
+      }
+
+      if (futureResponse != null) {
+        response = await futureResponse.timeout(Duration(seconds: 10));
       }
     } catch (error) {
       throw HttpError.serverError;
